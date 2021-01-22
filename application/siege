@@ -1,0 +1,9 @@
+https://www.joedog.org/siege-home
+
+./configure --prefix=/usr/local/siege
+make; make install
+
+
+./siege -c 100 -b -t30s -q http://${server}/test/1
+
+
