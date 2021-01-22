@@ -1,0 +1,13 @@
+1. app1
+===========
+ss -s
+
+Total: 1218 (kernel 4940)
+TCP:   27922 (estab 55, closed 27838, orphaned 16, synrecv 0, timewait 27835/0), ports 0
+
+netstat -napo | grep -ic ${port}
+13817
+============
+
+
+
