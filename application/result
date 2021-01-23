@@ -100,5 +100,6 @@ INET	  633       623       10
 FRAG	  0         0         0
 
 netstat -napo | grep -ic 6379
-474
+346
+
 
