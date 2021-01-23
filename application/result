@@ -88,17 +88,17 @@ netstat -napo | grep -ic time_wait
 0
 
 ss -s
-Total: 1609 (kernel 4664)
-TCP:   614 (estab 583, closed 1, orphaned 17, synrecv 0, timewait 0/0), ports 0
+Total: 1619 (kernel 4636)
+TCP:   624 (estab 553, closed 1, orphaned 57, synrecv 0, timewait 0/0), ports 0
 
 Transport Total     IP        IPv6
-*	  4664      -         -        
+*	  4636      -         -        
 RAW	  1         0         1        
 UDP	  9         7         2        
-TCP	  613       604       9        
-INET	  623       611       12       
+TCP	  623       616       7        
+INET	  633       623       10       
 FRAG	  0         0         0
 
 netstat -napo | grep -ic 6379
-490
+488
 
