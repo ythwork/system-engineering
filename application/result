@@ -1,0 +1,104 @@
+#1
+scenario
+NOT use redis connection pool
+NOT use keepalive
+
+at server 
+gunicorn -w 4 -b 0.0.0.0:5000 app1:app
+
+at client
+siege -c 100 -b -t30s -q http://${server}/test/1
+
+result 
+netstat -napo | grep -ic time_wait
+28074
+
+
+ss -s
+Total: 1096 (kernel 4408)
+TCP:   28171 (estab 40, closed 28080, orphaned 36, synrecv 0, timewait 28079/0), ports 0
+
+Transport Total     IP        IPv6
+*	  4408      -         -        
+RAW	  1         0         1        
+UDP	  9         7         2        
+TCP	  91        84        7        
+INET	  101       91        10       
+FRAG	  0         0         0
+
+
+netstat -napo | grep -ic 6379
+14119
+
+
+
+#2
+scenario
+USE redis connection pool
+NOT use keepalive
+
+at server
+gunicorn -w 4 -b 0.0.0.0:5000 app2:app
+
+at client
+siege -c 100 -b -t30s -q http://${server}/test/1
+
+result
+netstat -napo | grep -ic time_wait
+13958
+
+ss -s
+Total: 1089 (kernel 4364)
+TCP:   14003 (estab 8, closed 13917, orphaned 65, synrecv 0, timewait 13916/0), ports 0
+
+Transport Total     IP        IPv6
+*	  4364      -         -        
+RAW	  1         0         1        
+UDP	  9         7         2        
+TCP	  86        79        7        
+INET	  96        86        10       
+FRAG	  0         0         0 
+
+netstat -napo | grep -ic 6379
+10
+
+
+
+#3
+scenario
+USE redis connection pool
+USE keepalive
+
+at server
+gunicorn -w 4 -b 0.0.0.0:5000  app2:app --keep-alive 10 -k eventlet
+
+at client
+siege -c 100 -b -t30s -q http://${server}/test/1 -H "Connection: Keep-Alive"
+
+result
+response header
+HTTP/1.1 200 OK
+Server: gunicorn/20.0.4
+Date: ...
+Connection: keep-alive
+Content-Type: ...
+Content-Length: 18
+
+netstat -napo | grep -ic time_wait
+0
+
+ss -s
+Total: 1609 (kernel 4664)
+TCP:   614 (estab 583, closed 1, orphaned 17, synrecv 0, timewait 0/0), ports 0
+
+Transport Total     IP        IPv6
+*	  4664      -         -        
+RAW	  1         0         1        
+UDP	  9         7         2        
+TCP	  613       604       9        
+INET	  623       611       12       
+FRAG	  0         0         0
+
+netstat -napo | grep -ic 6379
+490
+

@@ -6,4 +6,7 @@ make; make install
 
 ./siege -c 100 -b -t30s -q http://${server}/test/1
 
+# keepalive
+./siege -c 100 -b -530s -q -H "Connection: Keep-Alive" http://${server}/test/1
+
 
